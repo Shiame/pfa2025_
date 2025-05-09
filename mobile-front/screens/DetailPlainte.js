@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, ActivityIndicator, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import { BASE_URL } from '../config';
+
 
 export default function DetailPlainteScreen({ route }) {
   const { plainteId } = route.params;
@@ -15,7 +17,7 @@ export default function DetailPlainteScreen({ route }) {
   const fetchPlainte = async () => {
     try {
       const token = await AsyncStorage.getItem('jwtToken');
-      const res = await axios.get(`http://192.168.0.110:8080/plaintes/${plainteId}`, {
+      const res = await axios.get(`${BASE_URL}/plaintes/${plainteId}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }

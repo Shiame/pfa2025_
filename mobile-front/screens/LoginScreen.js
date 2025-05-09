@@ -3,6 +3,8 @@ import { View, TextInput, Text, StyleSheet, Alert, TouchableOpacity, Image, Keyb
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { StatusBar } from 'expo-status-bar';
+import { BASE_URL } from '../config';
+
 
 export default function LoginScreen({ navigation }) {
     const [email, setEmail] = useState('');
@@ -17,7 +19,7 @@ export default function LoginScreen({ navigation }) {
         
         setIsLoading(true);
         try{
-            const res = await axios.post('http://192.168.0.110:8080/auth/login',{
+            const res = await axios.post(`${BASE_URL}/auth/login`,{
                 email,
                 password
             });

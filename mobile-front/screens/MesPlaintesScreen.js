@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, Button, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import { BASE_URL } from '../config';
 
 export default function MesPlaintesScreen({ navigation }) {
   const [plaintes, setPlaintes] = useState([]);
@@ -18,7 +19,7 @@ export default function MesPlaintesScreen({ navigation }) {
     setError(null);
     try {
       const token = await AsyncStorage.getItem('jwtToken');
-      const res = await axios.get('http://192.168.0.110:8080/plaintes/mes-plaintes', {
+      const res = await axios.get(`${BASE_URL}/plaintes/mes-plaintes`, {
         headers: {
           Authorization: `Bearer ${token}`
         }

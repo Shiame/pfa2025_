@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { Alert, View, TextInput, Button, Text, Image, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Alert, View, TextInput, Button, Text, Image, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator, Platform, ToastAndroid } from 'react-native';
 import axios from 'axios';
 import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
-import { Picker } from '@react-native-picker/picker';
 import { jwtDecode } from "jwt-decode";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MaterialIcons, FontAwesome5, Ionicons } from '@expo/vector-icons';
+import { NLP_BASE_URL, BASE_URL } from '../config'
 
 export default function AddPlainte() {
   const [description, setDescription] = useState('');
@@ -14,9 +14,11 @@ export default function AddPlainte() {
   const [latitude, setLatitude] = useState('');
   const [longitude, setLongitude] = useState('');
   const [image, setImage] = useState(null);
-  const [categorie, setCategorie] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isLocationLoading, setIsLocationLoading] = useState(false);
+  const [categorie, setCategorie] = useState('');
+  const [isNlpLoading, setIsNlpLoading] = useState(false);
+
 
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -67,14 +69,17 @@ export default function AddPlainte() {
     });
     data.append('upload_preset', 'pfa_upload'); 
     data.append('cloud_name', 'dqlcaqjmg'); 
+
+    
   
     try {
       const res = await fetch('https://api.cloudinary.com/v1_1/dqlcaqjmg/image/upload', {
         method: 'POST',
         body: data,
       });
-  
+    
       const result = await res.json();
+      console.log('Cloudinary tags:', result.tags);
       return result.secure_url; 
     } catch (err) {
       console.error("Erreur d'upload Cloudinary", err);
@@ -82,7 +87,6 @@ export default function AddPlainte() {
     }
   };
   
-
   const getUserLocation = async () => {
     try {
       setIsLocationLoading(true);
@@ -113,12 +117,42 @@ export default function AddPlainte() {
     }
   };
 
-  const submitPlainte = async () => {
-    // Validation
-    if (!categorie) {
-      Alert.alert('Erreur', 'Veuillez sélectionner une catégorie');
-      return;
+  const suggestCategorie = async (text) => {
+    if (!text || text.trim().length < 10) return;
+    
+    try {
+      setIsNlpLoading(true);
+      const res = await fetch(`${NLP_BASE_URL}/classify`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ description: text })
+      });
+      
+      if (!res.ok) throw new Error("NLP error");
+      
+      const { categorie: suggestedCategory } = await res.json();
+      
+      setCategorie(suggestedCategory);
+      
+    } catch (err) {
+      console.warn("Suggestion NLP échouée :", err);
+    } finally {
+      setIsNlpLoading(false);
     }
+  };
+
+  
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (description && description.trim().length >= 0) {
+        suggestCategorie(description);
+      }
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [description]);
+
+  const submitPlainte = async () => {
     if (!description) {
       Alert.alert('Erreur', 'Veuillez ajouter une description');
       return;
@@ -127,36 +161,40 @@ export default function AddPlainte() {
       Alert.alert('Erreur', 'Veuillez préciser la localisation');
       return;
     }
+    
 
     try {
       setIsLoading(true);
       const token = await AsyncStorage.getItem('jwtToken');
       const decoded = jwtDecode(token);
       let uploadedImageUrl = image;
-          if (image) {
-            uploadedImageUrl = await uploadImageToCloudinary(image);
-
-          }
+      
+      if (image) {
+        uploadedImageUrl = await uploadImageToCloudinary(image);
+      }
   
       const plainte = {
         description,
-        localisation,
         latitude,
         longitude,
-        categorie,
-        imgUrl: uploadedImageUrl || "https://via.placeholder.com/150",
+        localisation,
+        imgUrl: uploadedImageUrl,
         utilisateurEmail: decoded.sub 
       };
-
-     
-
+      console.log("Payload plainte à envoyer →", {
+        description, localisation,
+        latitude, longitude,
+        imgUrl: uploadedImageUrl,
+        utilisateurEmail: decoded.sub
+      });
+      
+      
   
-      await axios.post('http://192.168.0.110:8080/plaintes', plainte, {
+      await axios.post(`${BASE_URL}/plaintes`, plainte, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
-      console.log("Image URL Cloudinary :", uploadedImageUrl);
   
       Alert.alert(
         "Succès", 
@@ -180,49 +218,10 @@ export default function AddPlainte() {
     setCategorie('');
   };
 
-  const getCategorieIcon = (cat) => {
-    switch(cat) {
-      case 'DECHETS': return 'trash';
-      case 'AGRESSION': return 'exclamation-triangle';
-      case 'CORRUPTION': return 'money-bill';
-      case 'VOIRIE': return 'road';
-      case 'AUTRES': return 'question';
-      default: return 'tag';
-    }
-  };
-
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Signaler un problème</Text>
       
-      <View style={styles.card}>
-        <View style={styles.cardHeader}>
-          <FontAwesome5 name="list-alt" size={18} color="#4A6572" />
-          <Text style={styles.cardTitle}>Catégorie</Text>
-        </View>
-        <View style={styles.pickerContainer}>
-          <Picker 
-            selectedValue={categorie}
-            onValueChange={(itemValue) => setCategorie(itemValue)}
-            style={styles.picker}>
-              <Picker.Item label="-- Sélectionner une catégorie --" value="" />
-              <Picker.Item label="Déchets" value="DECHETS" />
-              <Picker.Item label="Agression" value="AGRESSION" />
-              <Picker.Item label="Corruption" value="CORRUPTION" />
-              <Picker.Item label="Voirie" value="VOIRIE" />
-              <Picker.Item label="Autres" value="AUTRES" />
-          </Picker>
-        </View>
-        {categorie && (
-          <View style={styles.categorieChip}>
-            <FontAwesome5 name={getCategorieIcon(categorie)} size={14} color="#fff" />
-            <Text style={styles.categorieChipText}>
-              {categorie.charAt(0) + categorie.slice(1).toLowerCase()}
-            </Text>
-          </View>
-        )}
-      </View>
-
       <View style={styles.card}>
         <View style={styles.cardHeader}>
           <FontAwesome5 name="comment-alt" size={18} color="#4A6572" />
@@ -236,6 +235,43 @@ export default function AddPlainte() {
           multiline={true}
           numberOfLines={4}
         />
+      </View>
+
+      <View style={styles.card}>
+        <View style={styles.cardHeader}>
+          <FontAwesome5 name="list-alt" size={18} color="#4A6572" />
+          <Text style={styles.cardTitle}>Catégorie</Text>
+          {isNlpLoading && (
+            <View style={styles.nlpLoadingIndicator}>
+              <ActivityIndicator size="small" color="#F9AA33" />
+            </View>
+          )}
+        </View>
+        
+        {isNlpLoading && (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="small" color="#F9AA33" />
+            <Text style={styles.loadingText}>Analyse en cours...</Text>
+          </View>
+        )}
+
+        {categorie ? (
+          <View style={styles.categorieSelection}>
+            <View style={styles.categorieChip}>
+              <MaterialIcons name="category" size={16} color="#fff" />
+              <Text style={styles.categorieChipText}>{categorie}</Text>
+            </View>
+            <Text style={styles.categorieInfo}>Catégorie suggérée par IA</Text>
+          </View>
+        ) : (
+          <View style={styles.waitingForNlp}>
+            <Text style={styles.waitingText}>
+              {description && description.length >= 0 
+                ? "Analyse de votre description en cours..."
+                : "Écrivez une description détaillée pour que l'IA suggère une catégorie"}
+            </Text>
+          </View>
+        )}
       </View>
 
       <View style={styles.card}>
@@ -293,9 +329,12 @@ export default function AddPlainte() {
       </View>
 
       <TouchableOpacity 
-        style={[styles.submitButton, (!categorie || !description || !localisation) && styles.disabledButton]} 
+        style={[
+          styles.submitButton, 
+          (!description || !localisation) && styles.disabledButton
+        ]} 
         onPress={submitPlainte}
-        disabled={isLoading || !categorie || !description || !localisation}>
+        disabled={isLoading || !description || !localisation}>
         {isLoading ? (
           <ActivityIndicator color="#fff" size="small" />
         ) : (
@@ -344,15 +383,10 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginLeft: 10,
     color: '#344955',
+    flex: 1,
   },
-  pickerContainer: {
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-    borderRadius: 8,
-    marginBottom: 10,
-  },
-  picker: {
-    height: 50,
+  nlpLoadingIndicator: {
+    marginLeft: 10,
   },
   input: {
     borderWidth: 1,
@@ -449,5 +483,37 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: '600',
     marginLeft: 6,
+  },
+  categorieSelection: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    gap: 8,
+  },
+  categorieInfo: {
+    color: '#666',
+    fontStyle: 'italic',
+    fontSize: 12,
+  },
+  loadingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  loadingText: {
+    marginLeft: 10,
+    color: '#666',
+  },
+  waitingForNlp: {
+    padding: 12,
+    borderRadius: 8,
+    backgroundColor: '#f8f8f8',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    alignItems: 'center',
+  },
+  waitingText: {
+    color: '#666',
+    fontStyle: 'italic',
+    textAlign: 'center',
   }
 });
