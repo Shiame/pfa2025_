@@ -12,12 +12,14 @@ public class Plainte {
     private Long id;
     private String description;
     private LocalDateTime dateSoumission;
-    private Double  longitude;
-    private Double latitude;
+    @Column(columnDefinition = "double precision")
+    private double latitude;
+    @Column(columnDefinition = "double precision")
+    private double longitude;
     private String imgUrl;
+    private String zone;
     private String localisation;
-    @Enumerated(EnumType.STRING)
-    private StatutPlainte statut;
+    private Integer priorite;
 
     public String getLocalisation() {
         return localisation;
@@ -27,6 +29,17 @@ public class Plainte {
         this.localisation = localisation;
     }
 
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "analyse_id")
+    private AnalyseIA analyseIA;
     @ManyToOne
     @JoinColumn(name = "utilisateur_id")
     private Utilisateur utilisateur;
@@ -39,12 +52,33 @@ public class Plainte {
     @JoinColumn(name = "serveurCible_id")
     private serveurCible serveur;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "analyse_id")
-    private AnalyseIA analyseIA;
 
     @OneToMany(mappedBy="plainte")
     private List<Notification> notifications;
+
+
+    public String getZone() {
+        return zone;
+    }
+
+    public void setZone(String zone) {
+        this.zone = zone;
+    }
+
+    public Integer getPriorite() {
+        return priorite;
+    }
+
+    public void setPriorite(Integer priorite) {
+        this.priorite = priorite;
+    }
+
+    @Enumerated(EnumType.STRING)
+    private StatutPlainte statut;
+
+
+
+
 
     public Double getLatitude() {
         return latitude;

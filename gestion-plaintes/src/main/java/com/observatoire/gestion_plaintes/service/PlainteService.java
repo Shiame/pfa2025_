@@ -1,6 +1,7 @@
 package com.observatoire.gestion_plaintes.service;
 
 import com.observatoire.gestion_plaintes.model.Plainte;
+import com.observatoire.gestion_plaintes.model.StatutPlainte;
 import com.observatoire.gestion_plaintes.model.Utilisateur;
 import com.observatoire.gestion_plaintes.repository.PlainteRepository;
 import com.observatoire.gestion_plaintes.repository.UtilisateurRepository;
@@ -29,6 +30,18 @@ public class PlainteService {
         Utilisateur user = userRepository.findByEmail(email).orElseThrow();
 
         return plainteRepository.findByUtilisateur(user);
+    }
+
+    public Plainte updateStatus(Long id, StatutPlainte newStatus) {
+        Plainte p = getPlainteById(id);
+        p.setStatut(newStatus);
+        return plainteRepository.save(p);
+    }
+
+
+    public Utilisateur getCitoyenByPlainteId(Long plainteId) {
+        Plainte p = getPlainteById(plainteId);
+        return p.getUtilisateur();
     }
 
 }

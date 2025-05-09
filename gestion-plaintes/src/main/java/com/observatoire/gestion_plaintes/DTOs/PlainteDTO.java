@@ -1,16 +1,59 @@
 package com.observatoire.gestion_plaintes.DTOs;
 
+import com.observatoire.gestion_plaintes.model.Categorie;
 import com.observatoire.gestion_plaintes.model.Utilisateur;
 
 import java.time.LocalDateTime;
 
 public class PlainteDTO {
     private String description;
+    private double latitude;
+    private double longitude;
     private String localisation;
-    private Double latitude;
-    private Double longitude;
     private String imgUrl;
-    private String categorie;
+    private Integer priorite;
+    private Categorie categorie;
+
+    public Integer getPriorite() {
+        return priorite;
+    }
+
+    public String getLocalisation() {
+        return localisation;
+    }
+
+    public void setLocalisation(String localisation) {
+        this.localisation = localisation;
+    }
+
+    public void setPriorite(Integer priorite) {
+        this.priorite = priorite;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Categorie getCategorie() {
+        return categorie;
+    }
+
+    public void setCategorie(Categorie categorie) {
+        this.categorie = categorie;
+    }
+
     private LocalDateTime dateSoumission;
     private String utilisateurEmail;
 
@@ -30,13 +73,6 @@ public class PlainteDTO {
         this.dateSoumission = dateSoumission;
     }
 
-    public Double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(Double longitude) {
-        this.longitude = longitude;
-    }
 
     public String getImgUrl() {
         return imgUrl;
@@ -46,29 +82,8 @@ public class PlainteDTO {
         this.imgUrl = imgUrl;
     }
 
-    public String getCategorie() {
-        return categorie;
-    }
 
-    public void setCategorie(String categorie) {
-        this.categorie = categorie;
-    }
 
-    public Double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
-    }
-
-    public String getLocalisation() {
-        return localisation;
-    }
-
-    public void setLocalisation(String localisation) {
-        this.localisation = localisation;
-    }
 
     public String getDescription() {
         return description;
