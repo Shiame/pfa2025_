@@ -2,6 +2,8 @@ package com.observatoire.gestion_plaintes.model;
 
 import jakarta.persistence.*;
 
+import java.util.Map;
+
 @Entity
 public class AnalyseIA {
 
@@ -10,15 +12,37 @@ public class AnalyseIA {
     private Long id;
     private String résumé;
     private String catégoriePrévue;
-    private String catégorie;
+    private String niveauUrgence;
+    @ElementCollection
+    @CollectionTable(name = "analyse_ia_nlp_scores",
+            joinColumns = @JoinColumn(name = "analyse_ia_id"))
+    @MapKeyColumn(name = "score_key")
+    @Column(name = "score_value")
+    private Map<String, Double> NLPScore;
 
-    public AnalyseIA(Long id, String résumé, String catégoriePrévue, String catégorie) {
-        this.id = id;
-        this.résumé = résumé;
+
+    public AnalyseIA(Long id,
+                     String résumé,
+                     String catégoriePrévue,
+                     String niveauUrgence,
+                     Map<String,Double> NLPScore) {
+        this.id            = id;
+        this.résumé        = résumé;
         this.catégoriePrévue = catégoriePrévue;
-        this.catégorie = catégorie;
+        this.niveauUrgence   = niveauUrgence;
+        this.NLPScore        = NLPScore;
     }
-    public AnalyseIA(){}
+
+    public Map<String,Double> getNLPScore() {
+        return NLPScore;
+    }
+    public void setNLPScore(Map<String,Double> NLPScore) {
+        this.NLPScore = NLPScore;
+    }
+
+
+    public AnalyseIA() {
+    }
 
     public Long getId() {
         return id;
@@ -44,11 +68,12 @@ public class AnalyseIA {
         this.catégoriePrévue = catégoriePrévue;
     }
 
-    public String getCatégorie() {
-        return catégorie;
+
+    public String getNiveauUrgence() {
+        return niveauUrgence;
     }
 
-    public void setCatégorie(String catégorie) {
-        this.catégorie = catégorie;
+    public void setNiveauUrgence(String niveauUrgence) {
+        this.niveauUrgence = niveauUrgence;
     }
 }
