@@ -42,9 +42,34 @@ export default function LoginScreen({ navigation }) {
                 password
             });
             const token = res.data.token;
-            
+
+            // 👉 EXTRAIRE le userId (adapte cette ligne si nécessaire selon ta réponse backend !)
+            // Si ta réponse est { token, user: { id, ... } } :
+            const userId = res.data.user ? res.data.user.id : res.data.userId || res.data.id;
+
+            // Stocker userId et token
+            if (userId) {
+                await AsyncStorage.setItem('userId', userId.toString());
+                console.log('UserId saved:', userId);
+            } else {
+                console.warn('Aucun userId trouvé dans la réponse backend !');
+            }
             await AsyncStorage.setItem('jwtToken', token);
-            console.log(token);
+            console.log('JWT token saved:', token);
+
+            // (Optionnel mais recommandé) ENVOYER le token Expo Push au backend juste après login
+            const expoPushToken = await AsyncStorage.getItem('expoPushToken');
+            if (userId && expoPushToken) {
+                fetch(`${BASE_URL}/utilisateurs/save-token`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId, expoPushToken })
+                });
+                console.log('Expo push token envoyé au backend:', expoPushToken);
+            } else {
+                console.warn('Expo token manquant ou userId absent, envoi au backend non fait.');
+            }
+
             Alert.alert(t('welcome'), t('loginSuccess'));
             navigation.navigate("Mes Plaintes");
 

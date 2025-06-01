@@ -1,9 +1,9 @@
 
 // Backend API base URL - Replace with your actual backend URL
-export const BASE_URL = "http://192.168.125.130:8080";
+export const BASE_URL = "http://10.1.6.172:8080";
 
 // NLP Service base URL - Replace with your actual NLP service URL
-export const NLP_BASE_URL = "http://192.168.125.130:8000";
+export const NLP_BASE_URL = "http://10.1.6.172:8000";
 
 // Cloudinary configuration
 export const CLOUDINARY_CONFIG = {

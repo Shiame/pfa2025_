@@ -16,10 +16,16 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.chaymae.bouazza.observatoireapp", 
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -31,6 +37,11 @@
           "locationAlwaysAndWhenInUsePermission": "Allow App to use your location."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "ea9d89c2-d0cd-4b6b-a42d-d43fe84bbf22"
+      }
+    }
   }
 }
