@@ -1,7 +1,7 @@
 # Observatoire de Plaintes Urbaines – Plateforme Complète
 
 Ce projet est une solution de gestion intelligente des plaintes citoyennes (web, mobile, back-end, service NLP).  
-Il permet la soumission, l'analyse, la priorisation, la visualisation et la gestion des plaintes grâce à l'IA.
+Il permet la soumission, l'analyse, la priorisation, la visualisation et la gestion des plaintes
 
 ---
 
