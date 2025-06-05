@@ -108,7 +108,6 @@ Le front mobile n'est **pas dockérisé**. Pour le lancer en local :
 ## 🔔 Notifications Push sur le mobile (important)
 
 - **Pendant le développement**, vous pouvez utiliser l'application **Expo Go** (disponible sur Android/iOS) pour scanner le QR code (`npx expo start`) et tester l'application mobile.
-- Les **notifications push** fonctionnent avec Expo Go tant que vous utilisez le service Expo (voir la doc officielle).
 - **Cependant**, pour tester toutes les fonctionnalités avancées (notifications en background, comportement de l'app comme une vraie appli native, etc.), il est **recommandé de générer une APK** avec Expo EAS Build :
 
   ```bash
