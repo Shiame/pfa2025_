@@ -1,7 +1,7 @@
 # Observatoire de Plaintes Urbaines – Plateforme Complète
 
 Ce projet est une solution de gestion intelligente des plaintes citoyennes (web, mobile, back-end, service NLP).  
-Il permet la soumission, l'analyse, la priorisation, la visualisation et la gestion des plaintes
+Il permet la soumission, l'analyse, la priorisation, la visualisation et la gestion des plaintes.
 
 ---
 
@@ -10,7 +10,7 @@ Il permet la soumission, l'analyse, la priorisation, la visualisation et la gest
 1. **Cloner le projet**
 
    ```bash
-   git clone <url-du-repo>
+   git clone https://github.com/Shiame/pfa2025_.git
    cd observatoire-app
    ```
 
@@ -105,6 +105,20 @@ Le front mobile n'est **pas dockérisé**. Pour le lancer en local :
 
 ---
 
+## 🔔 Notifications Push sur le mobile (important)
+
+- **Pendant le développement**, vous pouvez utiliser l'application **Expo Go** (disponible sur Android/iOS) pour scanner le QR code (`npx expo start`) et tester l'application mobile.
+- Les **notifications push** fonctionnent avec Expo Go tant que vous utilisez le service Expo (voir la doc officielle).
+- **Cependant**, pour tester toutes les fonctionnalités avancées (notifications en background, comportement de l'app comme une vraie appli native, etc.), il est **recommandé de générer une APK** avec Expo EAS Build :
+
+  ```bash
+  eas build -p android
+  ```
+
+  Ensuite, il suffit d'installer l'APK généré sur votre téléphone Android pour profiter d'une expérience complète.
+
+---
+
 ## ⏹️ Arrêter le projet
 
 Pour tout arrêter proprement, dans le dossier du projet, fais :
@@ -146,7 +160,7 @@ observatoire-app/
 - **Backend** : Spring Boot (Java)
 - **Frontend Web** : React + Vite
 - **Mobile** : React Native + Expo
-- **NLP Service** : FastAPI (Python) + Spacy
+- **NLP Service** : FastAPI (Python)
 - **Base de données** : PostgreSQL
 - **Conteneurisation** : Docker & Docker Compose
 
