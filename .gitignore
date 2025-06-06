@@ -34,4 +34,8 @@ build/
 
 node_modules/
 
+
+# Ignore specifically landingpage/node_modules
+landingpage/node_modules/
+
 .env
