@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "570308890251",
+    "project_id": "observatoireapp",
+    "storage_bucket": "observatoireapp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:570308890251:android:7a58ad0f8ccf6153aa8e8e",
+        "android_client_info": {
+          "package_name": "com.chaymae.bouazza.observatoireapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBs9ImpOm90_pGvoVLK2tI4WFx0-Oil5vo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
