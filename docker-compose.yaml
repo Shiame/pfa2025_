@@ -1,0 +1,53 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:17
+    container_name: db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: draftblocsteno
+      POSTGRES_DB: observatoire_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./sauvegarde.sql:/docker-entrypoint-initdb.d/sauvegarde.sql
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./gestion-plaintes
+    container_name: backend
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/observatoire_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=draftblocsteno
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+  front-web:
+    build:
+      context: ./DashboardAdmin
+    container_name: front-web
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  nlp-service:
+    build:
+      context: ./nlp-service
+    container_name: nlp-service
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    restart: unless-stopped
+
+volumes:
+  db_data:
