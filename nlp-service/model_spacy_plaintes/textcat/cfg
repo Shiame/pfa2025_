@@ -1,0 +1,11 @@
+{
+  "labels":[
+    "AGRESSION",
+    "DECHETS",
+    "CORRUPTION",
+    "VOIRIE",
+    "AUTRES"
+  ],
+  "threshold":0.0,
+  "positive_label":null
+}
