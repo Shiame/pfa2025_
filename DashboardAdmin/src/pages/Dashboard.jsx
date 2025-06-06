@@ -92,8 +92,10 @@ export default function Dashboard() {
       }
 
       if (summaries.status === 'fulfilled' && summaries.value.length > 0) {
-        const mainSummary = summaries.value[0]
-        setAiSummary(mainSummary)
+  console.log("Résumé IA affiché :", summaries.value[0]);
+  setAiSummary(summaries.value[0]);
+
+
       }
     } catch (error) {
       console.warn('AI summary not available:', error)
@@ -271,37 +273,39 @@ export default function Dashboard() {
       </div>
 
       {/* AI Summary Card (Minimal) */}
-      {nlpAvailable && aiSummary && (
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200 p-6">
-          <div className="flex items-start justify-between">
-            <div className="flex-1">
-              <div className="flex items-center mb-3">
-                <Brain className="text-blue-600 mr-2" size={20} />
-                <h3 className="text-lg font-semibold text-gray-900">Résumé Intelligence Artificielle</h3>
-              </div>
-              <p className="text-gray-700 leading-relaxed">
-                {aiSummary.naturalLanguageSummary || aiSummary.natural_language_summary}
-              </p>
-              <div className="flex items-center mt-3 space-x-4 text-sm text-blue-700">
-                <span className="flex items-center">
-                  <MapPin size={14} className="mr-1" />
-                  {aiSummary.zone}
-                </span>
-                <span className="flex items-center">
-                  <Activity size={14} className="mr-1" />
-                  {aiSummary.count} plainte(s)
-                </span>
-                {aiSummary.anomaly && (
-                  <span className="flex items-center bg-orange-100 text-orange-800 px-2 py-1 rounded-full text-xs">
-                    <Target size={12} className="mr-1" />
-                    Anomalie détectée
-                  </span>
-                )}
-              </div>
-            </div>
-          </div>
+     {nlpAvailable && aiSummary && (
+  <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200 p-6">
+    <div className="flex items-start justify-between">
+      <div className="flex-1">
+        <div className="flex items-center mb-3">
+          <Brain className="text-blue-600 mr-2" size={20} />
+          <h3 className="text-lg font-semibold text-gray-900">Résumé Intelligence Artificielle</h3>
         </div>
-      )}
+        <p className="text-gray-700 leading-relaxed">
+          {/* Utilise la propriété exacte de ta réponse JSON */}
+          {aiSummary?.natural_language_summary || "Aucun résumé disponible"}
+        </p>
+        <div className="flex items-center mt-3 space-x-4 text-sm text-blue-700">
+          <span className="flex items-center">
+            <MapPin size={14} className="mr-1" />
+            {aiSummary.zone}
+          </span>
+          <span className="flex items-center">
+            <Activity size={14} className="mr-1" />
+            {aiSummary.count} plainte(s)
+          </span>
+          {aiSummary.anomaly && (
+            <span className="flex items-center bg-orange-100 text-orange-800 px-2 py-1 rounded-full text-xs">
+              <Target size={12} className="mr-1" />
+              Anomalie détectée
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
 
       {/* Main Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

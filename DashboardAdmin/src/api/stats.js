@@ -200,16 +200,25 @@ export const fetchHourly = (fromIso, toIso) =>
   api.get('/stats/horaire', { params: { from: fromIso, to: toIso } })
      .then(r => r.data);
 
-// AI Integration - Minimal
-export const fetchIntelligentSummaries = (hours = 24, zone = null) =>
-  api.get('/plaintes/intelligent-summary', { 
-    params: { hours, zone: zone === 'Inconnu' ? null : zone } 
-  })
-  .then(r => r.data)
-  .catch(err => {
-    console.warn("Intelligent summaries not available:", err);
-    return [];
-  });
+export const fetchIntelligentSummaries = () => {
+  console.log("[DEBUG][fetchIntelligentSummaries] Call WITHOUT params");
+  return api.get('/plaintes/intelligent-summary')
+    .then(r => {
+      console.log("[DEBUG][fetchIntelligentSummaries] Response data:", r.data);
+      if (Array.isArray(r.data) && r.data.length > 0) {
+        console.log("[DEBUG][fetchIntelligentSummaries] First entry:", r.data[0]);
+      } else {
+        console.log("[DEBUG][fetchIntelligentSummaries] No data returned.");
+      }
+      return r.data;
+    })
+    .catch(err => {
+      console.warn("[DEBUG][fetchIntelligentSummaries] Intelligent summaries not available:", err);
+      return [];
+    });
+};
+
+
 
 export const fetchNLPServiceStatus = () =>
   api.get('/plaintes/nlp-status')

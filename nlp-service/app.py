@@ -13,7 +13,7 @@ import json
 
 #charger notre modèle entrainé
 try :
-    nlp = spacy.load("../model_spacy_plaintes")
+    nlp = spacy.load("model_spacy_plaintes")
 except Exception as e :
     raise RuntimeError(f"Erreur de chargement de  modèle NLP: {str(e)} ")
 
@@ -26,7 +26,7 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S'
 )
 try:
-    nlp = spacy.load("../model_spacy_plaintes")
+    nlp = spacy.load("model_spacy_plaintes")
 except Exception as e:
     raise RuntimeError(f"Erreur de chargement de modèle NLP: {str(e)}")
 

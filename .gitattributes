@@ -1,2 +1,5 @@
 /mvnw text eol=lf
 *.cmd text eol=crlf
+*.pkl filter=lfs diff=lfs merge=lfs -text
+model_spacy_plaintes/* filter=lfs diff=lfs merge=lfs -text
+nlp-service/model_spacy_plaintes/* filter=lfs diff=lfs merge=lfs -text
